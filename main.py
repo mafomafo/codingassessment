@@ -18,38 +18,48 @@ def print_incoming_ships():
     
 # Main function
 def main():
-    for time in range(10,18):
-        scheduler(time, db.docking_bays, db.incoming_ships)
     print_docking_bays()
     print_incoming_ships()
+    available()
     
     # TODO: Implement the docking scheduler logic here
     # Levels 1 to 4 and the bonus can be implemented below
 
-# dock_bay[]['schedule'][0]                 Arrive
-# dock_bay[]['schedule'][1]                 Depart
+# db.docking_bays[]['schedule'][0]                 Arrive
+# db.print_docking_bays[]['schedule'][1]                 Depart
 # f"{num%24}:00"                    Time formatter
-# inc_ships[]['arrival_time']
-# inc_ships[]['departure_time']
-def slot_filler(time, ind):
-        if db.docking_bays[ind]["schedule"] == []:
-            for i in range (len(db.incoming_ships)):
-                if db.incoming_ships[i]['arrival_time'] == time:
-                    db.docking_bays[ind]['schedule'] = [(db.incoming_ships[i]['arrival_time'], db.incoming_ships[i]['departure_time'], "taken")]
-                    print(f"Bay {db.docking_bays[ind]['bay_id']} is taken.")
-                    break
-def available(time, ind):
-    temp = []
-    if not(db.docking_bays[ind]["schedule"] == []):
-        for ele in db.docking_bays[ind]["schedule"]:
-            temp.append(ele)
-    for ele in temp:
-        if int(ele[0][0:2]) >= time and int(ele[1][0:2]) <= time:
+# db.incoming_ships[]['arrival_time']
+# db.incoming_ships[]['departure_time']
+
+
+def find_slot():
+    temp_sizes = []
+    for i, bay in enumerate(db.docking_bays):
+        if bay['size'] not in temp_sizes:
+            temp_sizes.append(bay['size'])
+    temp_ship_sched = []
+    for ind, bay in enumerate(db.incoming_ships):
+        temp_ship_sched.append((bay['arrival_time'], bay['departure_time'], 'taken'))
+    temp_bay_sched = []
+    for ind, bay in enumerate(db.docking_bays):
+        for i, sched in enumerate(bay['schedule']):
+            temp_bay_sched.append(sched)
+        temp_bay_sched.append(())
+    arr = ""
+    dep = ""
+    temp_bay = db.docking_bays
+    temp_ship = db.incoming_ships
+    ship_ind_ref = 0
+    time_occupied = 0
+    for i, bay in enumerate(temp_bay):
+        for j, ship in enumerate(temp_ship):
+            time_occupied = abs(int(bay['schedule'][0][0:2]) - int(bay['schedule'][1][0:2]))
             
+
     
-def scheduler(time, dock_bay, inc_ships):
-    for i in range (len(db.docking_bays)):
-        slot_filler(time, i)
+        
+
+
 
 
 if __name__ == "__main__":
