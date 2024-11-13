@@ -31,34 +31,15 @@ def main():
 # db.incoming_ships[]['arrival_time']
 # db.incoming_ships[]['departure_time']
 
-
-def find_slot():
-    temp_sizes = []
-    for i, bay in enumerate(db.docking_bays):
-        if bay['size'] not in temp_sizes:
-            temp_sizes.append(bay['size'])
-    temp_ship_sched = []
-    for ind, bay in enumerate(db.incoming_ships):
-        temp_ship_sched.append((bay['arrival_time'], bay['departure_time'], 'taken'))
-    temp_bay_sched = []
+def available(time):
+    temp = []
     for ind, bay in enumerate(db.docking_bays):
-        for i, sched in enumerate(bay['schedule']):
-            temp_bay_sched.append(sched)
-        temp_bay_sched.append(())
-    arr = ""
-    dep = ""
-    temp_bay = db.docking_bays
-    temp_ship = db.incoming_ships
-    ship_ind_ref = 0
-    time_occupied = 0
-    for i, bay in enumerate(temp_bay):
-        for j, ship in enumerate(temp_ship):
-            time_occupied = abs(int(bay['schedule'][0][0:2]) - int(bay['schedule'][1][0:2]))
-            
-
-    
-        
-
+        for sched in bay['schedule']:
+            if sched[0] == time or sched == []:
+                temp.append[bay]
+def dock_at_this_time(time, ind):
+    if time == db.incoming_ships[ind]['arrival_time']:
+        available(time)
 
 
 
