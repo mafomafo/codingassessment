@@ -35,9 +35,20 @@ def main():
 # db.incoming_ships[]['departure_time']
 
 
-def available(ind):
-    for ship in db.incoming_ships:
-        for bay in db.docking_bays:
+def available(ship_ind):
+    total_time = 0
+    check = false
+    for ind, bay in db.docking_bays:
+        if check:
+            break
+        for ship in db.incoming_ships:
+            if bay['schedule'] == [] and bay['size'] == ship['size']:
+                db.docking_bays[ind]['schedule'].append(ship['arrival_time'],ship[departure_time], f"taken by {ship['ship_name']}")
+                check = true
+                break
+            for bay2 in db.docking_bays:
+                total_time = 
+                if 
 
 
 if __name__ == "__main__":
