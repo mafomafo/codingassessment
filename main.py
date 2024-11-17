@@ -46,7 +46,7 @@ def available(ship_ind):
         if bay['schedule'] == []:
             bay['schedule'].append((db.incoming_ships[ship_ind]['arrival_time'], db.incoming_ships[ship_ind]['departure_time'], f"Taken by {db.incoming_ships[ship_ind]['ship_name']}"))
             temp.append((db.incoming_ships[ship_ind]['arrival_time'], db.incoming_ships[ship_ind]['departure_time'], f"Taken by {db.incoming_ships[ship_ind]['ship_name']}", bay['bay_id'] + 1))
-            return f"Bay {bay['bay_id']} is taken by {db.incoming_ships[ship_ind]['ship_name']} during the time of {db.incoming_ships[ship_ind]['arrival_time']} and {db.incoming_ships[ship_ind]['departure_time']}."
+            break
         start = int(bay['schedule'][0][0][0:2])
         end = int(bay['schedule'][0][1][0:2])
         if len(bay['schedule']) == 1:
