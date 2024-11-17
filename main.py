@@ -21,7 +21,7 @@ def print_incoming_ships():
 
 # Main function
 def main():
-    print(available(4))
+    print(available(0))
 
     # TODO: Implement the docking scheduler logic here
     # Levels 1 to 4 and the bonus can be implemented below
@@ -37,7 +37,6 @@ def available(ship_ind):
     temp = []
     start = 0
     end = 0
-    total_time = 0
     start_s = int(db.incoming_ships[ship_ind]['arrival_time'][0:2])
     end_s = int(db.incoming_ships[ship_ind]['departure_time'][0:2])
     total_time_s = abs(start_s - end_s)
@@ -50,7 +49,6 @@ def available(ship_ind):
             return f"Bay {bay['bay_id']} is taken by {db.incoming_ships[ship_ind]['ship_name']} during the time of {db.incoming_ships[ship_ind]['arrival_time']} and {db.incoming_ships[ship_ind]['departure_time']}."
         start = int(bay['schedule'][0][0][0:2])
         end = int(bay['schedule'][0][1][0:2])
-        total_time = abs(start - end)
         if len(bay['schedule']) == 1:
             if abs(10 + total_time_s) <= start:
                 bay['schedule'].insert(0, (db.incoming_ships[ship_ind]['arrival_time'], db.incoming_ships[ship_ind]['departure_time'], f"Taken by {db.incoming_ships[ship_ind]['ship_name']}"))
@@ -67,7 +65,6 @@ def available(ship_ind):
             while sched_ind_ahead < len(bay['schedule']):
                 start = int(bay['schedule'][sched_len][0][0:2])
                 end = int(bay['schedule'][sched_len][1][0:2])
-                total_time = abs(start - end)
                 start_ahead = int(bay['schedule'][sched_ind_ahead][0][0:2])
                 end_ahaed = int(bay['schedule'][sched_ind_ahead][1][0:2])
                 total_time_ahead = abs(start_ahead - end)
