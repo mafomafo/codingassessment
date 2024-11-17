@@ -21,7 +21,7 @@ def print_incoming_ships():
 
 # Main function
 def main():
-    print(available(0))
+    print(available(4))
 
     # TODO: Implement the docking scheduler logic here
     # Levels 1 to 4 and the bonus can be implemented below
@@ -41,13 +41,12 @@ def available(ship_ind):
     start_s = int(db.incoming_ships[ship_ind]['arrival_time'][0:2])
     end_s = int(db.incoming_ships[ship_ind]['departure_time'][0:2])
     total_time_s = abs(start_s - end_s)
-    ind_to_insert = 0
-    for bay in db.docking_bays:
+    for ind, bay in enumerate(db.docking_bays):
         if not(bay['size'] == db.incoming_ships[ship_ind]['size']):
             continue
         if bay['schedule'] == []:
             bay['schedule'].append((db.incoming_ships[ship_ind]['arrival_time'], db.incoming_ships[ship_ind]['departure_time'], f"Taken by {db.incoming_ships[ship_ind]['ship_name']}"))
-            temp.append((db.incoming_ships[ship_ind]['arrival_time'], db.incoming_ships[ship_ind]['departure_time'], f"Taken by {db.incoming_ships[ship_ind]['ship_name']}"))
+            temp.append((db.incoming_ships[ship_ind]['arrival_time'], db.incoming_ships[ship_ind]['departure_time'], f"Taken by {db.incoming_ships[ship_ind]['ship_name']}", bay['bay_id'] + 1))
             return f"Bay {bay['bay_id']} is taken by {db.incoming_ships[ship_ind]['ship_name']} during the time of {db.incoming_ships[ship_ind]['arrival_time']} and {db.incoming_ships[ship_ind]['departure_time']}."
         start = int(bay['schedule'][0][0][0:2])
         end = int(bay['schedule'][0][1][0:2])
@@ -55,12 +54,32 @@ def available(ship_ind):
         if len(bay['schedule']) == 1:
             if abs(10 + total_time_s) <= start:
                 bay['schedule'].insert(0, (db.incoming_ships[ship_ind]['arrival_time'], db.incoming_ships[ship_ind]['departure_time'], f"Taken by {db.incoming_ships[ship_ind]['ship_name']}"))
-                temp.append((db.incoming_ships[ship_ind]['arrival_time'], db.incoming_ships[ship_ind]['departure_time'], f"Taken by {db.incoming_ships[ship_ind]['ship_name']}"))
+                temp.append((db.incoming_ships[ship_ind]['arrival_time'], db.incoming_ships[ship_ind]['departure_time'], f"Taken by {db.incoming_ships[ship_ind]['ship_name']}", bay['bay_id'] + 1))
                 break
             if end <= abs(18 - total_time_s):
                 bay['schedule'].append((db.incoming_ships[ship_ind]['arrival_time'], db.incoming_ships[ship_ind]['departure_time'], f"Taken by {db.incoming_ships[ship_ind]['ship_name']}"))
-                temp.append((db.incoming_ships[ship_ind]['arrival_time'], db.incoming_ships[ship_ind]['departure_time'], f"Taken by {db.incoming_ships[ship_ind]['ship_name']}"))
+                temp.append((db.incoming_ships[ship_ind]['arrival_time'], db.incoming_ships[ship_ind]['departure_time'], f"Taken by {db.incoming_ships[ship_ind]['ship_name']}", bay['bay_id'] + 1))
                 break
-    return f"Bay {bay['bay_id']} is taken by {db.incoming_ships[ship_ind]['ship_name']} during the time of {db.incoming_ships[ship_ind]['arrival_time']} and {db.incoming_ships[ship_ind]['departure_time']}."
+        sched_len = 0
+        sched_ind_ahead = 1
+        check = True
+        if len(bay['schedule']) >= 2:
+            while sched_ind_ahead < len(bay['schedule']):
+                start = int(bay['schedule'][sched_len][0][0:2])
+                end = int(bay['schedule'][sched_len][1][0:2])
+                total_time = abs(start - end)
+                start_ahead = int(bay['schedule'][sched_ind_ahead][0][0:2])
+                end_ahaed = int(bay['schedule'][sched_ind_ahead][1][0:2])
+                total_time_ahead = abs(start_ahead - end)
+                if abs(start - 10) >= total_time_s and check:
+                    check = False
+                    bay['schedule'].insert(sched_len, (db.incoming_ships[ship_ind]['arrival_time'], db.incoming_ships[ship_ind]['departure_time'], f"Taken by {db.incoming_ships[ship_ind]['ship_name']}"))
+                    temp.append((db.incoming_ships[ship_ind]['arrival_time'], db.incoming_ships[ship_ind]['departure_time'], f"Taken by {db.incoming_ships[ship_ind]['ship_name']}", bay['bay_id'] + 1))
+                    break
+                if total_time_ahead >= total_time_s:
+                    bay['schedule'].insert(sched_len, (db.incoming_ships[ship_ind]['arrival_time'], db.incoming_ships[ship_ind]['departure_time'], f"Taken by {db.incoming_ships[ship_ind]['ship_name']}"))
+                    temp.append((db.incoming_ships[ship_ind]['arrival_time'], db.incoming_ships[ship_ind]['departure_time'], f"Taken by {db.incoming_ships[ship_ind]['ship_name']}", bay['bay_id'] + 1))
+                    break
+    return f"Bay {temp[0][3]} is taken by {temp[0][2]} during the time of {temp[0][0]} and {temp[0][1]}."
 if __name__ == "__main__":
     main()
